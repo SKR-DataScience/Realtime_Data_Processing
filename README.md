@@ -1,2 +1,12 @@
-# Realtime_Data_Processing
-실시간 빅데이터 처리 - Spark, Airflow, Flink, Kafka
+﻿# 실시간 빅데이터 처리
+실시간 빅데이터 처리를 위한 다양한 기술 및 프레임워크를 학습한다. (Spark, Airflow, Flink, Kafka)   
+
+
+
+## 스터디원
+- 김유리, 최동민
+
+
+## 1. 데이터 엔지니어링 개요
+
+<table>
