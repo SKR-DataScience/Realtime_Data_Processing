@@ -63,3 +63,7 @@
       2) Airflow - 데이터 오케스트레이션
       3) Kafka - 이벤트 스트리밍
       4) Flink - 분산 스트림 프로세싱
+
+
+
+* 읽어보면 좋을 자료 : https://apricot-plume-3f9.notion.site/e36d8125c3804f06a76abbd648d136a8#082d5e418d7e45fd807a8b2dabd4aa78 (데이터 파이프라인 개요 설명)
