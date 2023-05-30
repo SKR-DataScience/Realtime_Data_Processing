@@ -1,4 +1,4 @@
-# 개요2. Resilient Distributed Dataset (RDD)
+# Resilient Distributed Dataset (RDD)
 
 <br/>
 
