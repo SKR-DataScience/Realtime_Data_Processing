@@ -1,4 +1,4 @@
-# 개요1. Apache Spark
+# Apache Spark
 
 ## 1. Apache Spark란
 
