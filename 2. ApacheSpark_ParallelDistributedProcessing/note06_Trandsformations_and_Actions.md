@@ -42,6 +42,8 @@
   - foreach()
   ```
 
+- 각 함수 기능은 실습파일에 기록
+
 <br/>
 
 ## 2. Transformation의 분류
