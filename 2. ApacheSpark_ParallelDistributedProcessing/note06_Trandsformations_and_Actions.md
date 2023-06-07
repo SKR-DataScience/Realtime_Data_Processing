@@ -54,3 +54,32 @@
 |특징|- 1:1 변환 <br/> - 하나의 열을 조작하기 위해 다른 파티션의 데이터 쓸 필요 없음 <br/> - 정렬이 필요하지 않은 경우 사용 | - Shuffling <br/> - 다른 파티션의 데이터가 섞여 변환 아웃풋 RDD에 들어가게 될 수 있음 |
 |함수|- filter(), map(), flatMap(), sample(), union() | - Intersection, join, distinct, cartesian, reduceByKey(), groupByKey()    |
 
+<br/>
+
+## 3. 지연 실행(Lazy Execution)의 이점
+
+* 데이터를 다루는 task는 iteration이 많으며, 이 과정에서 메모리를 최대한 효율적으로 쓰는 것이 중요 (ex. ML 학습)
+  
+  ![image](https://github.com/SKR-DataScience/Realtime_Data_Processing/assets/55543156/fe042944-ea9a-452e-bf80-63876772b19c)
+  
+  - 하둡은 각 작업(step)이 끝날 때마다 disk에 저장. 비효율적.
+  - 반면 Spark는 작업 후 결과를 메모리에 저장 후 다시 활용함. (In-memory)
+    - Spark에서 지연 실행이 가능하기 때문에, 중간중간 메모리를 효과적으로 사용하도록 설계함으로써 더욱 효과적으로 최적화가 가능함
+
+
+* Transformation 후 결과를 메모리에 저장하기 위한 함수: **Persist() / Cache()**
+  
+  - 예시
+  ```python
+  val lastYearsLogs: RDD[String]=...
+  val logsWithError = lastYearsLogs.filter(_.contains("ERROR")).persist()
+  val firstLogsWithErrors = logsWithErrors.take(10)
+  val numErrors = logsWithErrors.count() //faster
+  ```
+    - String 데이터가 들어있는 RDD에서, 'ERROR'라는 글자가 들어간 것만 필터링 (Transformation)
+    - 필터링한 결과를 persist() 함수를 통해 메모리에 저장
+    - 메모리에 결과가 남아있기 때문에, 이후 take()나 count() 등 Action이 더 빨리 수행됨
+
+  - Persist와 Cache의 차이
+    - Persist(): 파라미터를 통해 storage level을 지정 가능 (memory-only, disk-only, memory-and-disk,...)
+    - Cache(): storage level이 항상 memory-only
