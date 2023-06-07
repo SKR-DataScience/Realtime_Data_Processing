@@ -76,10 +76,12 @@
   val firstLogsWithErrors = logsWithErrors.take(10)
   val numErrors = logsWithErrors.count() //faster
   ```
-    - String 데이터가 들어있는 RDD에서, 'ERROR'라는 글자가 들어간 것만 필터링 (Transformation)
-    - 필터링한 결과를 persist() 함수를 통해 메모리에 저장
-    - 메모리에 결과가 남아있기 때문에, 이후 take()나 count() 등 Action이 더 빨리 수행됨
+  - String 데이터가 들어있는 RDD에서, 'ERROR'라는 글자가 들어간 것만 필터링 (Transformation)
+  - 필터링한 결과를 persist() 함수를 통해 메모리에 저장
+  - 메모리에 결과가 남아있기 때문에, 이후 take()나 count() 등 Action이 더 빨리 수행됨
 
-  - Persist와 Cache의 차이
-    - Persist(): 파라미터를 통해 storage level을 지정 가능 (memory-only, disk-only, memory-and-disk,...)
-    - Cache(): storage level이 항상 memory-only
+  
+  
+- Persist와 Cache의 차이
+  - Persist(): 파라미터를 통해 storage level을 지정 가능 (memory-only, disk-only, memory-and-disk,...)
+  - Cache(): storage level이 항상 memory-only
