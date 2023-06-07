@@ -9,10 +9,38 @@
 ### - Transformation
   - 새로운 RDD를 반환
   - **지연 실행 (Lazy Execution)**
-
+  
 ### - Action
   - 결과값을 연산하여 출력하거나 저장
   - **즉시 실행 (Eager Execution)**
+
+<br/>
+
+#### 주요 함수 비교
+- Transformation
+  ```
+  - map()
+  - flatMap()
+  - filter()
+  - distnct()
+  - reduceByKey()
+  - groupByKey()
+  - mapValues()
+  - flatMapValues()
+  - sortByKey()
+  ```
+  
+- Actions
+  ```
+  - collect()
+  - count()
+  - countByValue()
+  - take()
+  - top()
+  - reduce()
+  - fold()
+  - foreach()
+  ```
 
 <br/>
 
