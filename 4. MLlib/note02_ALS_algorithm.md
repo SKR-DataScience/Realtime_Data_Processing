@@ -12,7 +12,7 @@
 
   * 실제 데이터는 아래와 같음
 
-    * 한 유저가 볼 수 있는 영화는 굉장히 많고, 따라서 빈 칸이 많음
+    * 한 유저가 볼 수 있는 영화는 굉장히 많고, 따라서 빈 칸이 많음    
     ![image](https://github.com/SKR-DataScience/Realtime_Data_Processing/assets/55543156/b2fbc4b8-ba8c-4277-8c7e-77147fe2899f) 
 
     * 빈 칸에 들어갈 영화 평점을 예측하여 값을 정렬 -> 유저별로 가장 높은 평점으로 예측된 영화를 추천!
