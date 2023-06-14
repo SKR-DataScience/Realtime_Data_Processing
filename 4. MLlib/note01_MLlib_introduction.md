@@ -56,8 +56,9 @@
     - 반환된 Model은 Transformer 기능을 함
   - 예시
     ```Python
-    lr = LinearRegression()   # Transformer
-    model = lr.fit(data)   # Estimator 
+    lr = LinearRegression()   
+    model = lr.fit(train_data)   # Estimator 
+    model.transform(test_data)   # Transformer 
     ```
     
 ### 3) Evaluator
