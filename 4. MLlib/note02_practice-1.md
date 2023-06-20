@@ -1,4 +1,4 @@
-# 실습1 : 간단한 ML model 구현 (Logistic Regression) 
+# 실습 1-1. 간단한 ML model 구현 (Logistic Regression) 
 
 ```Python
 
@@ -68,7 +68,7 @@ prediction.show()
 
 ```
 
-# 실습2 : 간단한 ML Pipeline 생성 
+# 실습 1-2. 간단한 ML Pipeline 생성 
 
 ```Python
 
