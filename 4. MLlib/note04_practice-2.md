@@ -242,3 +242,156 @@ model.recommendForAllItems(3).show()
 
 ```
 
+* 서비스 적용
+    - 실제 서비스에서는 API 형태로 각 유저를 위한 추천을 제공해야 함
+```Python
+from pyspark.sql.types import IntegerType
+
+# 3명의 유저에게 추천한다고 가정
+user_list = [65, 78, 81]
+users_df = spark.createDataFrame(user_list, IntegerType()).toDF('userId')
+
+users_df.show()
+'''
++------+
+|userId|
++------+
+|    65|
+|    78|
+|    81|
++------+
+'''
+
+# 3명의 유저에게 영화 5개씩 추천
+## ALS 내장함수 사용 
+user_recs = model.recommendForUserSubset(users_df, 5)
+user_recs.show()
+
+'''
++------+--------------------+
+|userId|     recommendations|
++------+--------------------+
+|    65|[{196717, 6.43577...|
+|    78|[{203086, 6.67400...|
+|    81|[{203086, 4.67855...|
++------+--------------------+
+'''
+
+# 실제 결과데이터는 이렇게 생김
+user_recs.collect()
+
+'''
+[Row(userId=65, recommendations=[Row(movieId=196717, rating=6.435771465301514), Row(movieId=194434, rating=6.192673206329346), Row(movieId=157791, rating=6.140571594238281), Row(movieId=198535, rating=6.132567405700684), Row(movieId=144202, rating=6.010857582092285)]),
+ Row(userId=78, recommendations=[Row(movieId=203086, rating=6.674009323120117), Row(movieId=194434, rating=6.530107498168945), Row(movieId=174627, rating=6.221368312835693), Row(movieId=203882, rating=6.195621013641357), Row(movieId=196787, rating=6.104584693908691)]),
+ Row(userId=81, recommendations=[Row(movieId=203086, rating=4.678553104400635), Row(movieId=193257, rating=4.428552627563477), Row(movieId=116847, rating=4.337314605712891), Row(movieId=138580, rating=4.312744140625), Row(movieId=151989, rating=4.296421527862549)])]
+'''
+
+# 첫번째 유저의 실제 추천 영화리스트 추출
+movies_list = user_recs.collect()[0].recommendations 
+recs_df = spark.createDataFrame(movies_list)
+recs_df.show()
+
+'''
++-------+-----------------+
+|movieId|           rating|
++-------+-----------------+
+| 196717|6.435771465301514|
+| 194434|6.192673206329346|
+| 157791|6.140571594238281|
+| 198535|6.132567405700684|
+| 144202|6.010857582092285|
++-------+-----------------+
+'''
+
+# movieId가 아니라 실제 영화제목을 붙여서 제공
+
+## 영화제목이 담긴 테이블을 로드
+movies_file = "/Users/asd31/jupyter_dongmin/data-engineering/01-spark/data/ml-25m/movies.csv"
+movies_df = spark.read.csv(f"file:///{movies_file}", inferSchema=True, header=True)
+movies_df.show()
+
+'''
++-------+--------------------+--------------------+
+|movieId|               title|              genres|
++-------+--------------------+--------------------+
+|      1|    Toy Story (1995)|Adventure|Animati...|
+|      2|      Jumanji (1995)|Adventure|Childre...|
+|      3|Grumpier Old Men ...|      Comedy|Romance|
+|      4|Waiting to Exhale...|Comedy|Drama|Romance|
+|      5|Father of the Bri...|              Comedy|
+|      6|         Heat (1995)|Action|Crime|Thri...|
+|      7|      Sabrina (1995)|      Comedy|Romance|
+|      8| Tom and Huck (1995)|  Adventure|Children|
+|      9| Sudden Death (1995)|              Action|
+|     10|    GoldenEye (1995)|Action|Adventure|...|
+|     11|American Presiden...|Comedy|Drama|Romance|
+|     12|Dracula: Dead and...|       Comedy|Horror|
+|     13|        Balto (1995)|Adventure|Animati...|
+|     14|        Nixon (1995)|               Drama|
+|     15|Cutthroat Island ...|Action|Adventure|...|
+|     16|       Casino (1995)|         Crime|Drama|
+|     17|Sense and Sensibi...|       Drama|Romance|
+|     18|   Four Rooms (1995)|              Comedy|
+|     19|Ace Ventura: When...|              Comedy|
+|     20|  Money Train (1995)|Action|Comedy|Cri...|
++-------+--------------------+--------------------+
+'''
+
+## 영화제목 정보를 추천결과에 Join해 제공
+recs_df.createOrReplaceTempView("recommendations")
+movies_df.createOrReplaceTempView("movies")
+
+query = """
+SELECT *
+FROM
+    movies JOIN recommendations
+    ON movies.movieId = recommendations.movieId
+ORDER BY
+    rating desc
+"""
+recommended_movies = spark.sql(query)
+recommended_movies.show()
+
+'''
++-------+--------------------+--------------------+-------+-----------------+
+|movieId|               title|              genres|movieId|           rating|
++-------+--------------------+--------------------+-------+-----------------+
+| 196717|Bernard and the G...|Comedy|Drama|Fantasy| 196717|6.435771465301514|
+| 194434|   Adrenaline (1990)|  (no genres listed)| 194434|6.192673206329346|
+| 157791|.hack Liminality ...|  (no genres listed)| 157791|6.140571594238281|
+| 198535|Trick: The Movie ...|Comedy|Crime|Mystery| 198535|6.132567405700684|
+| 144202|Catch That Girl (...|     Action|Children| 144202|6.010857582092285|
++-------+--------------------+--------------------+-------+-----------------+
+'''
+
+```
+
+* 함수화
+    - 실제 서비스시에는 하나의 함수로 사용하는게 좋음
+```Python
+
+def get_recommendations(user_id, num_recs):
+    users_df = spark.createDataFrame([user_id], IntegerType()).toDF('userId')
+    user_recs_df = model.recommendForUserSubset(users_df, num_recs)
+    
+    recs_list = user_recs_df.collect()[0].recommendations
+    recs_df = spark.createDataFrame(recs_list)
+    recommended_movies = spark.sql(query)
+    return recommended_movies
+
+# 456번 유저에게 10개의 영화를 추천해줘.
+recs = get_recommendations(456, 10)
+
+# 결과 출력
+recs.toPandas()
+```
+![image](https://github.com/SKR-DataScience/Realtime_Data_Processing/assets/55543156/a9216eda-898b-4f5c-8f95-8663d980301b)
+
+<br/>
+
+* 사용 끝나고 꼭 session stop하기
+```Python
+
+spark.stop()
+
+```
