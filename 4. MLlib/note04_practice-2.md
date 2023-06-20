@@ -1,4 +1,4 @@
-# 실습 2. ALS 추천 알고리즘 파이프라인 구현
+# 실습 2. ALS 추천 모델 파이프라인 구현
 
 * Spark Session 생성
 ```Python
