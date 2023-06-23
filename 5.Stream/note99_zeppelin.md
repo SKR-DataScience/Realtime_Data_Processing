@@ -1,5 +1,4 @@
-# Zepplin
-
+# Zeppelin
 
 # I. 설치
 1. 로컬 환경
@@ -16,5 +15,29 @@
         ```
     - 터미널 실행한 채로(위 명령어 유지한 채로) 로컬 호스트 접속(safari에 localhost:8080 경로 입력)
         <center><img src="./fig99_2.png" width="100%"></center>
+    - 사용 완료 후 제플린 종료
+        ```bash 
+        ./bin/zeppelin-daemon.sh stop
+        ```
 
-        
+# 2. 도커로 제플린 설치
+- [설치 참고](https://moons08.github.io/programming/zeppelin-with-docker/)
+- 도커 이미지 받고 로컬 호스트 지정해서 실행해보기
+    ```bash
+    docker pull apache/zeppelin:0.10.0
+
+    docker run -d --rm \
+    -p 8080:8080 \
+    -v $PWD/logs:/logs \
+    -v $PWD/data:/data \
+    -v $PWD/notebook:/notebook \
+    -e ZEPPELIN_ADDR='0.0.0.0' \
+    -e ZEPPELIN_NOTEBOOK_DIR='/notebook' \
+    -e ZEPPELIN_LOG_DIR='/logs' \
+    --name zeppelin apache/zeppelin:0.10.0
+    ```
+    <center><img src="./fig99_3.png" width="100%"></center>
+    
+    - port 클릭해서 실행 후 확인
+    <center><img src="./fig99_4.png" width="100%"></center>
+    
