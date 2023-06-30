@@ -4,6 +4,8 @@
 
 ## 과거 워크플로우 관리 문제
 
+* 워크플로우(Workflow): 의존성으로 연결된 작업(task)들의 집합
+
 ![image](https://github.com/SKR-DataScience/Realtime_Data_Processing/assets/55543156/f79d6da7-bce0-4b8a-b850-84c53eeeba2d)
 
 * 매일 10시에 주기적으로 돌아가는 데이터 파이프라인을 만들어야 한다고 가정
